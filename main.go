@@ -40,31 +40,25 @@ func (l *NodeList[T]) CreateNodes(values ...T) {
 	}
 }
 
-func (l *NodeList[T]) Print() {
-	node := l.head
-	for node != nil {
-		fmt.Printf("%v-> ", node.value)
-		node = node.next
-	}
-}
-
 func (l *NodeList[T]) InsertAfter(node *Node[T], newNode *Node[T]) {
 	newNode.next = node.next
 	node.next = newNode
 }
 
-// func (l *NodeList[T]) Delete(scope T) {
-// 	currentNode := l.head
+func (l *NodeList[T]) Delete(node *Node[T]) {
+	if l.head == node {
+		l.head = l.head.next
+		return
+	}
 
-// 	for currentNode != nil {
-//         nextCurrentNode := currentNode.next
-// 		if currentNode.value == scope {
-
-// 		}
-
-//         currentNode = currentNode.next
-// 	}
-// }
+	currentNode := l.head
+	for currentNode.next != nil {
+		if currentNode.next == node {
+			currentNode.next = currentNode.next.next
+		}
+		currentNode = currentNode.next
+	}
+}
 
 func (l *NodeList[T]) Find(callback func(*Node[T]) bool) *Node[T] {
 	currentNode := l.head
@@ -77,17 +71,26 @@ func (l *NodeList[T]) Find(callback func(*Node[T]) bool) *Node[T] {
 	return nil
 }
 
+func (l *NodeList[T]) Print() {
+	node := l.head
+	for node != nil {
+		fmt.Printf("%v-> ", node.value)
+		node = node.next
+	}
+}
+
 func main() {
 	linkedList := &NodeList[int]{}
 
 	linkedList.CreateNodes(1, 2, 3, 54, 6, 76, 231, 21)
 
-	linkedList.InsertAfter(
-		linkedList.Find(func(n *Node[int]) bool { return n.value == 6 }),
-		linkedList.CreateNode(69),
-	)
+	findNode := linkedList.Find(func(n *Node[int]) bool { return n.value == 1 })
 
-	// linkedList.Delete(6)
+	newNode := linkedList.CreateNode(69)
+
+	linkedList.InsertAfter(findNode, newNode)
+
+	linkedList.Delete(findNode)
 
 	linkedList.Print()
 
